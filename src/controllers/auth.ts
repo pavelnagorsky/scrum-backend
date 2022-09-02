@@ -7,6 +7,22 @@ import { errorHandler } from '../util/errorHandler';
 import { checkValidity } from '../util/checkValidity';
 import { ErrorWithStatus, IMiddleware } from '../config/types';
 
+class AuthDTO {
+  email: string;
+  username: string;
+  password: string;
+
+  constructor(
+    email: string,
+    username: string,
+    password: string
+  ) {
+    this.email = email;
+    this.username = username;
+    this.password = password;
+  }
+}
+
 // регистрация
 export const signup: IMiddleware = async (req, res, next) => {
   try {
@@ -17,24 +33,27 @@ export const signup: IMiddleware = async (req, res, next) => {
       validationErr.message = 'Validation failed. Please, provide correct data and make another request.';
       throw validationErr
     };
+    // typesafe data extraction from req
+    const authData = new AuthDTO(
+      req.body.email,
+      req.body.username,
+      req.body.password
+    );
 
-    const email: string = req.body.email;
-    const username: string = req.body.username;
-    const password: string = req.body.password;
     // проверка существования емэйла
-    const existingEmail = await User.findOne({ email });
+    const existingEmail = await User.findOne({ email: authData.email });
     if (existingEmail) {
       const error: ErrorWithStatus = new Error('E-Mail already exists. Please, try a different one.');
       error.statusCode = 401; // no authenticated
       throw error;
     }
     // зашифровка пароля
-    const hashedPw = await bcrypt.hash(password, 12);
+    const hashedPw = await bcrypt.hash(authData.password, 12);
     // создание нового пользователя
     const user = new User({
-      email,
+      email: authData.email,
       password: hashedPw,
-      username
+      username: authData.username
     });
     const savedUser = await user.save();
     res.status(201).json({
