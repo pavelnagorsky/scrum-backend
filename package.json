@@ -2,7 +2,6 @@
   "name": "scrum_platform",
   "version": "1.0.0",
   "description": "scrum_platform",
-  
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
@@ -20,7 +19,8 @@
     "express-validator": "^6.14.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.2",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "tslib": "^2.4.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
