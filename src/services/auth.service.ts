@@ -4,19 +4,29 @@ import { jwtConfig } from '../config/jwtToken';
 import { ErrorWithStatus } from "../config/types";
 import { User } from "../models/user.model";
 
-class AuthData {
+class LoginData {
   email: string;
-  username: string;
   password: string;
+
+  constructor(
+    email: string,
+    password: string
+  ) {
+    this.email = email;
+    this.password = password;
+  }
+}
+
+class SignupData extends LoginData {
+  username: string;
 
   constructor(
     email: string,
     username: string,
     password: string
   ) {
-    this.email = email;
+    super(email, password)
     this.username = username;
-    this.password = password;
   }
 }
 
@@ -26,7 +36,7 @@ export const signup = async (
   username: string,
   password: string
 ) => {
-  const authData = new AuthData(email, username, password);
+  const authData = new SignupData(email, username, password);
   // проверка существования email
   const existingEmail = await User.findOne({ email: authData.email });
   if (existingEmail) {
@@ -49,13 +59,14 @@ export const signup = async (
 
 // авторизация
 export const login = async (email: string, password: string) => {
-  const user = await User.findOne({ email });
+  const loginData = new LoginData(email, password);
+  const user = await User.findOne({ email: loginData.email });
   if (!user) {
     const error: ErrorWithStatus = new Error('No user with this email found.');
     error.statusCode = 401; // no authenticated
     throw error;
   }
-  const isEqual = await compare(password, user.password);
+  const isEqual = await compare(loginData.password, user.password);
   if (!isEqual) {
     const error: ErrorWithStatus = new Error('Password is incorrect.');
     error.statusCode = 401; // no authenticated
