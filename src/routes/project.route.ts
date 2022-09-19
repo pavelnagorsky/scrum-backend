@@ -37,7 +37,7 @@ router.patch(
       .isLength({ min: 3 })
   ],
   projectControllers.updateProject
-),
+);
 
 router.post('/:projectId/join', projectControllers.joinProject);
 

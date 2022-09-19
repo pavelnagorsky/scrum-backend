@@ -4,7 +4,7 @@ import { jwtConfig } from '../config/jwtToken';
 import { ErrorWithStatus } from "../config/types";
 import { User } from "../models/user.model";
 
-export class AuthData {
+class AuthData {
   email: string;
   username: string;
   password: string;
@@ -21,7 +21,12 @@ export class AuthData {
 }
 
 // регистрация пользователя
-export const signup = async (authData: AuthData) => {
+export const signup = async (
+  email: string,
+  username: string,
+  password: string
+) => {
+  const authData = new AuthData(email, username, password);
   // проверка существования email
   const existingEmail = await User.findOne({ email: authData.email });
   if (existingEmail) {

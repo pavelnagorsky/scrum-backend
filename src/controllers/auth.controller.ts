@@ -5,16 +5,14 @@ import { validate } from '../util/validate';
 
 // регистрация
 export const signup: IMiddleware = async (req, res, next) => {
+  const email: string = req.body.email;
+  const username: string = req.body.username;
+  const password: string = req.body.password;
   try {
     // валидация ввода
     validate(req);
     // data extraction from req
-    const authData = new AuthService.AuthData(
-      req.body.email,
-      req.body.username,
-      req.body.password
-    );
-    const savedUserId = await AuthService.signup(authData);
+    const savedUserId = await AuthService.signup(email, username, password);
     res.status(201).json({
       message: "User created!",
       userId: savedUserId
