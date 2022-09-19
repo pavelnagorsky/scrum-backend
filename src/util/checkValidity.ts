@@ -8,5 +8,5 @@ export const checkValidity = (errors: Result<ValidationError>) => {
       error.statusCode = 422;
       error.data = errors.array();
       return error;
-    };
+    }
 };

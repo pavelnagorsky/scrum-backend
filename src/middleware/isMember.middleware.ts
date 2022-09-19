@@ -1,5 +1,5 @@
 import { ErrorWithStatus, IMiddleware } from '../config/types';
-import { Project } from '../models/project';
+import { Project } from '../models/project.model';
 import { errorHandler } from '../util/errorHandler';
 
 // проверка явялется ли пользователь участником проекта
@@ -8,7 +8,7 @@ export const isMember: IMiddleware = async (req, res, next) => {
     // находим проект
     const project = await Project
       .findById(req.params.projectId)
-      .select('admin');
+      .select(['admin', 'users']);
 
     if (!project) {
       const error: ErrorWithStatus = new Error('Project not found');
@@ -18,11 +18,11 @@ export const isMember: IMiddleware = async (req, res, next) => {
 
     // если id пользователя нет в списке участников проекта - выходим
     let isUserMember = false;
-    project.users.forEach(userId => {
+    for (let userId of project.users) {
       if (userId.toString() === req.userId) {
         isUserMember = true;
       }
-    });
+    }
     if (!isUserMember) {
       const error: ErrorWithStatus = new Error('User is not a member of project');
       error.statusCode = 403;

@@ -1,6 +1,6 @@
 import { ErrorWithStatus, IMiddleware } from '../config/types';
-import { Project } from '../models/project';
-import { User } from '../models/user';
+import { Project } from '../models/project.model';
+import { User } from '../models/user.model';
 import { errorHandler } from '../util/errorHandler';
 
 // проверка прав админа
