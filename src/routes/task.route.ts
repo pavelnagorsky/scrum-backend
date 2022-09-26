@@ -17,10 +17,7 @@ router.put(
       .trim()
       .isLength({ min: 1 }),
     body('storyPoints')
-      .matches(/^[0-5]+$/),
-    body('iterationId')
-      .isString()
-      .trim()
+      .matches(/^[0-5]+$/)
   ],
   taskControllers.createTask
 );
